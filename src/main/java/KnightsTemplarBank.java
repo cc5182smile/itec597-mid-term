@@ -21,7 +21,6 @@ public class KnightsTemplarBank {
                     while (i >= times * options[j]) {
                         f[i][j] += f[i - times * options[j]][j - 1];
                         times++;
-
                     }
                     int compare = 0;
                     while (i >= compare * options[j]) {
