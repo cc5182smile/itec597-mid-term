@@ -7,7 +7,7 @@ public class KnightsTemplarBank {
         int n[][] = new int[amount + 1][options.length];
         if (amount > 0) {
             for (int i = 0; i <= amount; i++) {
-                n[i][0] = amount;
+                n[i][0] = 20000;
                 if (i % options[0] == 0) {
                     f[i][0] = 1;
                     n[i][0] = i / options[0];
@@ -16,21 +16,26 @@ public class KnightsTemplarBank {
             for (int i = 0; i <= amount; i++) {
                 for (int j = 1; j < options.length; j++) {
                     f[i][j] = f[i][j - 1];
-                    n[i][j] = amount;
-                    if (i >= options[j]) {
-                        int times = 1;
-                        while (i >= times * options[j]) {
-                            f[i][j] += f[i - times * options[j]][j - 1];
-                            if (n[i][j] > n[i - times * options[j]][j - 1] + times) {
-                                n[i][j] = n[i - times * options[j]][j - 1] + times;
-                            }
-                            times++;
+                    n[i][j] = 20000;
+                    int times = 1;
+                    while (i >= times * options[j]) {
+                        f[i][j] += f[i - times * options[j]][j - 1];
+                        times++;
+
+                    }
+                    int compare = 0;
+                    while (i >= compare * options[j]) {
+
+                        if (n[i][j] > n[i - compare * options[j]][j - 1] + compare) {
+                            n[i][j] = n[i - compare * options[j]][j - 1] + compare;
                         }
+                        compare++;
                     }
                 }
             }
-
         }
+
+
         if (f[amount][options.length - 1] > 0) {
             result[0] = f[amount][options.length - 1];
             result[1] = n[amount][options.length - 1];
