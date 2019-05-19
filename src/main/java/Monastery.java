@@ -66,12 +66,13 @@ public class Monastery {
                     int room = i * rooms[0].length + j;
                     int nextRoom = room - rooms[0].length;
                     uf.union(room, nextRoom);
-                    if (getMaxArea(uf, numbers) >= moreArea && j < colOfRoom - 1) {
+                    if (getMaxArea(uf, numbers) > moreArea||(getMaxArea(uf, numbers) >= moreArea && j < colOfRoom - 1)) {
                         moreArea = getMaxArea(uf, numbers);
                         rowOfRoom = i + 1;
                         colOfRoom = j + 1;
                         wallOfRoom = 2;
                     }
+
                     uf = uf(rooms);
                 }
             }
