@@ -44,39 +44,35 @@ public class Monastery {
         int rowOfRoom = 0;
         int colOfRoom = 0;
         int wallOfRoom = 0;
-        for (int i = 0; i < rooms.length; i++) {
-            for (int j = 1; j < rooms[0].length; j++) {
-                if ((rooms[i][j] & 1) != 0) {
+        for (int j = 0; j < rooms[0].length; j++) {
+            for (int i = rooms.length - 1; i >= 0; i--) {
+                if ((rooms[i][j] & 2) != 0 && i > 0) {
                     int room = i * rooms[0].length + j;
-                    int nextRoom = room - 1;
+                    int nextRoom = room - rooms[0].length;
                     uf.union(room, nextRoom);
                     if (getMaxArea(uf, numbers) > moreArea) {
                         moreArea = getMaxArea(uf, numbers);
                         rowOfRoom = i + 1;
                         colOfRoom = j + 1;
-                        wallOfRoom = 1;
+                        wallOfRoom = 2;
                     }
                     uf = uf(rooms);
-                }
-            }
-        }
-        for (int j = 0; j < rooms[0].length; j++) {
-            for (int i = rooms.length - 1; i >= 1; i--) {
-                if ((rooms[i][j] & 2) != 0) {
+                } else if ((rooms[i][j] & 4) != 0 && j < rooms[0].length - 1) {
                     int room = i * rooms[0].length + j;
-                    int nextRoom = room - rooms[0].length;
+                    int nextRoom = room + 1;
                     uf.union(room, nextRoom);
-                    if (getMaxArea(uf, numbers) > moreArea||(getMaxArea(uf, numbers) >= moreArea && j < colOfRoom - 1)) {
+                    if (getMaxArea(uf, numbers) > moreArea) {
                         moreArea = getMaxArea(uf, numbers);
                         rowOfRoom = i + 1;
                         colOfRoom = j + 1;
-                        wallOfRoom = 2;
+                        wallOfRoom = 4;
                     }
-
                     uf = uf(rooms);
+
                 }
             }
         }
+
 
         result[2] = moreArea;
         result[3] = rowOfRoom;
@@ -108,6 +104,9 @@ public class Monastery {
     public static void main(String[] args) {
         Monastery monastery = new Monastery();
         int rooms[][] = {{3, 2, 6, 3, 6}, {1, 8, 4, 1, 4}, {13, 7, 13, 9, 4}, {3, 0, 2, 6, 5}, {9, 8, 8, 12, 13}};
+        //int rooms[][] = {{15,15}};
+
+
         System.out.println(Arrays.toString(monastery.resolve(rooms)));
 
     }
