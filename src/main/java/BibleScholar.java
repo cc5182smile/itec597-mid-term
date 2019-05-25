@@ -12,13 +12,14 @@ public class BibleScholar {
         for (String result : bibleScholar.resolve()) {
             System.out.println(result);
         }
-        // System.out.println((System.currentTimeMillis()-a)/1000f+ "秒");
+        //System.out.println((System.currentTimeMillis()-a)/1000f+ "秒");
 
     }
 
     private HashMap<String, Integer> statistics() {
         HashMap<String, Integer> wordStatistics = new HashMap<>();
-        ArrayList<String> stopWords = new ArrayList<>();
+        HashSet<String> stopWords = new HashSet<>();
+        //ArrayList<String> stopWords = new ArrayList<>();
         try {
             String stopWordsPath = this.getClass().getClassLoader().getResource("stopwords.txt").getPath();
             File stopWordsFile = new File(stopWordsPath);
@@ -90,22 +91,35 @@ public class BibleScholar {
                 }
             }
         }
-        MaxPQ<String> maxPQ = new MaxPQ<>(new PQComparator());
         MinPQ<String> minPQ = new MinPQ<>(new PQComparator());
+        MaxPQ<String> maxPQ = new MaxPQ<>(new PQComparator());
         for (String key : words.keySet()) {
-            maxPQ.insert(key);
-            minPQ.insert(key);
+            if (minPQ.size() < 12) {
+                minPQ.insert(key);
+            } else if (words.get(key) > words.get(minPQ.min()) ||
+                    words.get(key) == words.get(minPQ.min()) && key.compareTo(minPQ.min()) > 0) {
+                minPQ.delMin();
+                minPQ.insert(key);
+            }
+        }
+        for (String key : words.keySet()) {
+            if (maxPQ.size() < 12) {
+                maxPQ.insert(key);
+            } else if (words.get(key) < words.get(maxPQ.max()) ||
+                    words.get(key) == words.get(maxPQ.max()) && key.compareTo(maxPQ.max()) < 0) {
+                maxPQ.delMax();
+                maxPQ.insert(key);
+            }
         }
 
-
         String[] result = new String[24];
-        Iterator<String> iterator1 = maxPQ.iterator();
-        for (int i = 0; i < 12; i++) {
+        Iterator<String> iterator1 = minPQ.iterator();
+        for (int i = 11; i >= 0; i--) {
             String str = iterator1.next();
             result[i] = str + ":" + words.get(str).toString();
         }
-        Iterator<String> iterator2 = minPQ.iterator();
-        for (int i = 11; i >= 0; i--) {
+        Iterator<String> iterator2 = maxPQ.iterator();
+        for (int i = 0; i < 12; i++) {
             String str = iterator2.next();
             result[12 + i] = str + ":" + words.get(str).toString();
         }
